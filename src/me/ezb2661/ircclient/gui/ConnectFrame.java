@@ -13,10 +13,11 @@ public class ConnectFrame extends BaseFrame
     public static ConnectFrame instance;
 
     private static final int FRAME_WIDTH = 400;
-    private static final int FRAME_HEIGHT = 300;
+    private static final int FRAME_HEIGHT = 350;
 
     private TitledTextField serverHostField;
     private TitledTextField serverPortField;
+    private TitledTextField nicknameField;
 
     public ConnectFrame( )
     {
@@ -32,17 +33,22 @@ public class ConnectFrame extends BaseFrame
         contentPanel.setBackground( Colors.BACKGROUND );
         contentPanel.setLayout( null );
 
-        this.serverHostField = new TitledTextField( "Server IP", (FRAME_WIDTH / 2) - 115, (FRAME_HEIGHT / 2) - 100, 210, 60, Colors.FOREGROUND );
+        this.serverHostField = new TitledTextField( "Server IP", (FRAME_WIDTH / 2) - 115, (FRAME_HEIGHT / 2) - 125, 210, 60, Colors.FOREGROUND );
         this.serverHostField.setBackground( Colors.BACKGROUND );
         this.serverHostField.setForeground( Colors.FOREGROUND );
         contentPanel.add( this.serverHostField );
 
-        this.serverPortField = new TitledTextField( "Server Port", (FRAME_WIDTH / 2) - 115, (FRAME_HEIGHT / 2) - 40, 210, 60, Colors.FOREGROUND );
+        this.serverPortField = new TitledTextField( "Server Port", (FRAME_WIDTH / 2) - 115, (FRAME_HEIGHT / 2) - 65, 210, 60, Colors.FOREGROUND );
         this.serverPortField.setBackground( Colors.BACKGROUND );
         this.serverPortField.setForeground( Colors.FOREGROUND );
         contentPanel.add( this.serverPortField );
 
-        BaseButton connectButton = new BaseButton( "Connect", (FRAME_WIDTH / 2) - 55, (FRAME_HEIGHT / 2) + 40, 100, 30 );
+        this.nicknameField = new TitledTextField( "Nickname", (FRAME_WIDTH/2) - 115, (FRAME_HEIGHT / 2) - 5, 210, 60, Colors.FOREGROUND );
+        this.nicknameField.setBackground( Colors.BACKGROUND );
+        this.nicknameField.setForeground( Colors.FOREGROUND );
+        contentPanel.add( this.nicknameField );
+
+        BaseButton connectButton = new BaseButton( "Connect", (FRAME_WIDTH / 2) - 55, (FRAME_HEIGHT / 2) + 75, 100, 30 );
         connectButton.addActionListener( e ->
             Client.instance.threadPoolExecutor.execute( ( ) ->
             {
@@ -50,7 +56,7 @@ public class ConnectFrame extends BaseFrame
                 {
                     int serverPort = Integer.parseInt( serverPortField.getText( ) );
                     serverPortField.setBorderTitleAndColor( "Server Port", Colors.FOREGROUND );
-                    Client.instance.connectToServer( serverHostField.getText( ), serverPort );
+                    Client.instance.connectToServer( nicknameField.getText( ), serverHostField.getText( ), serverPort );
                     serverHostField.setBorderTitleAndColor( "Server IP", Colors.FOREGROUND );
                     instance.setVisible( false );
                 }

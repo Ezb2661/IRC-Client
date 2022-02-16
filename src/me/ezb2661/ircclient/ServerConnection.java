@@ -5,36 +5,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
-public class Client
+public class ServerConnection
 {
-    public static String CLIENT_VERSION = "1.0";
-    public static Client instance;
+    private final Socket socket;
+    private final InputStream inStream;
+    private final OutputStream outStream;
 
-    public ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool( 1 );
+    public boolean isConnected = false;
 
-    private boolean isConnected = false;
-    private Socket socket;
-    private OutputStream outStream;
-    private InputStream inStream;
-
-    public Client( )
+    public ServerConnection( String serverHost, int serverPort ) throws IOException
     {
-    }
-
-    public void connectToServer( String serverHost, int serverPort ) throws IOException
-    {
-        if( isConnected )
-        {
-            Logger.logMessage( "[!] Already connected, disconnect before attempting to connect to another server.");
-            return;
-        }
-
-        this.socket = new Socket( serverHost, serverPort );
-        this.outStream = socket.getOutputStream( );
-        this.inStream = socket.getInputStream( );
+        socket = new Socket( serverHost, serverPort );
+        inStream = socket.getInputStream( );
+        outStream = socket.getOutputStream( );
         this.isConnected = true;
     }
 
@@ -50,9 +34,14 @@ public class Client
         int readBytes = this.inStream.read( incomingData );
         for( int i = 0; i < readBytes; i++ )
         {
-            result.append( incomingData[i] );
+            result.append( Character.toChars( incomingData[i] ) );
         }
         return result.toString( );
+    }
+
+    public String getServerIP( )
+    {
+        return this.socket.getInetAddress( ).getHostAddress( );
     }
 
     public void disconnect( ) throws IOException
@@ -76,4 +65,5 @@ public class Client
             }
         }
     }
+
 }
